@@ -1,0 +1,64 @@
+body {
+    background: #f5f6fa;
+    font-family: Arial, sans-serif;
+}
+
+.Login {
+    background: #fff;
+    padding: 40px 30px;
+    margin: 60px auto;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    text-align: center;
+}
+
+.Login h1 {
+    color: #2d3436;
+    margin-bottom: 24px;
+}
+
+.Login p {
+    text-align: left;
+    margin: 8px 0 4px 0;
+    color: #636e72;
+    font-size: 15px;
+}
+
+.Login input[type="email"],
+.Login input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.Login input[type="email"]:focus,
+.Login input[type="password"]:focus {
+    border: 1.5px solid #0984e3;
+}
+
+.Login button {
+    margin: 8px;
+    width: 100%;
+    padding: 12px;
+    background: #0984e3;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.Login button:hover {
+    background: #74b9ff;
+}
+
+h1{
+    color: red;
+}
