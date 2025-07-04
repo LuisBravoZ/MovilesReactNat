@@ -1,9 +1,15 @@
-
-//llamar a la funcion de routers
 import Router from './routers/routers';
-export default function App() {
-   return (
-     <Router />
-   );
- }
+import { UserProvider } from './contexts/UserContext';
+import { PaperProvider } from 'react-native-paper';
 
+
+
+export default function App() {
+  return (
+    <UserProvider>
+      <PaperProvider>
+        <Router />
+      </PaperProvider>
+    </UserProvider>
+  );
+}
