@@ -1,4 +1,3 @@
-import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../views/Login'
@@ -9,6 +8,8 @@ import LogoutTab from '../views/LogoutTab'
 import { Platform } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 
 const Stack = createNativeStackNavigator()
@@ -38,19 +39,29 @@ function MainTabs() {
 }
 
 export default function Router() {
+      const { isAuthenticated, checkingAuth } = useContext(AuthContext);
+    if (checkingAuth) return null;
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Registro" component={Registro} />
-                <Stack.Screen
-                    name={Platform.OS === 'web' ? 'Dashboard' : 'MainTabs'}
-                    component={Platform.OS === 'web' ? Dashboard : MainTabs}
-                />
-                {Platform.OS === 'web' && (
-                    <Stack.Screen name="Perfil" component={Perfil} />
-                )}
-            </Stack.Navigator>
-        </NavigationContainer>
+            <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen
+              name={Platform.OS === 'web' ? 'Dashboard' : 'MainTabs'}
+              component={Platform.OS === 'web' ? Dashboard : MainTabs}
+            />
+            {Platform.OS === 'web' && (
+              <Stack.Screen name="Perfil" component={Perfil} />
+            )}
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Registro" component={Registro} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
     );
+
 }

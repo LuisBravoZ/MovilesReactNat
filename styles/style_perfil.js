@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#f9f9f9',
   },
   menuButton: {
     position: 'absolute',
@@ -19,78 +19,58 @@ export default StyleSheet.create({
     top: 0,
     width: 200,
     height: '100%',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
     borderRightWidth: 1,
     borderRightColor: '#ddd',
     justifyContent: 'flex-start',
     paddingTop: 40,
     zIndex: 3,
   },
-  closeIcon: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    zIndex: 4,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
   perfilBox: {
-    backgroundColor: '#fff',
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-    width: 350,
-    borderRadius: 12,
-    elevation: 10, // para sombra en Android
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    alignItems: 'center',
-    marginLeft: 30,
-  },
-  // Agrega o ajusta en tu objeto styles
-  perfilBox: {
-    backgroundColor: '#fff',
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-    width: 350,
-    borderRadius: 16,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    alignItems: 'stretch',
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  label: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: '#000000',
-    width: 80,
-  },
-  value: {
-    fontSize: 16,
-    color: '#333',
-    marginLeft: 8,
-  },
-  input: {
-    flex: 1,
-    marginLeft: 8,
     backgroundColor: '#ffffff',
+    paddingVertical: 30,
+    paddingHorizontal: 25,
+    width: 380,
+    borderRadius: 16,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    marginTop: 40,
+    marginBottom: 20,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
+    color: '#222222',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  infoRow: {
+    marginBottom: 20,
+  },
+  label: {
+    fontWeight: '600',
+    fontSize: 16,
     color: '#000000',
-    marginBottom: 8,
+    marginBottom: 6,
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    textShadowColor: '#000000',
+    color: '#000000',
+  },
+  button: {
+    backgroundColor: '#000000',
+    borderRadius: 8,
+    marginTop: 20,
+    width: '100%',
+  },
+  buttonText: {
+    color: '#f4f6f6',
+    fontSize: 16,
+    textAlign: 'center',
   },
   drawerContainer: {
     backgroundColor: '#fff',
@@ -99,11 +79,5 @@ export default StyleSheet.create({
     alignSelf: 'flex-start',
     borderRadius: 10,
     minHeight: 300,
-  },
-  button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginTop: 20,
   },
 });

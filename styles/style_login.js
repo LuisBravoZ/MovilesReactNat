@@ -13,7 +13,7 @@ export default StyleSheet.create({
     paddingHorizontal: 30,
     width: 350,
     borderRadius: 12,
-    elevation: 10, // para sombra en Android
+    elevation: 10, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -40,7 +40,9 @@ export default StyleSheet.create({
     borderRadius: 6,
     fontSize: 15,
     marginBottom: 16,
-    color: '#888888'
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    placeholderTextColor: '#888888'
   },
   button: {
     backgroundColor: '#000000',
