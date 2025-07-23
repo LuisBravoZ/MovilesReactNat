@@ -18,15 +18,42 @@ import AgregarUsuario from '../views/views_Admin/AgregarUsuario';
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator();
 
-function MainTabs() {
+function MainTabs({ userRole }) {
   return (
     <Tab.Navigator
+      initialRouteName={
+        userRole === 1
+          ? 'AdminUser'
+          : userRole === 2
+            ? 'NutricionistaUser'
+            : 'Dashboard'
+      }
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
-          if (route.name === 'Dashboard') iconName = 'view-dashboard';
-          if (route.name === 'Perfil') iconName = 'account';
-          if (route.name === 'Cerrar sesión') iconName = 'logout';
+          switch (route.name) {
+            case 'Dashboard':
+              iconName = 'view-dashboard';
+              break;
+            case 'Perfil':
+              iconName = 'account';
+              break;
+            case 'AdminUser':
+              iconName = 'account-cog';
+              break;
+            case 'AgregarUsuario':
+              iconName = 'account-plus';
+              break;
+            case 'NutricionistaUser':
+              iconName = 'stethoscope';
+              break;
+            case 'Cerrar sesión':
+              iconName = 'logout';
+              break;
+            default:
+              iconName = 'help-circle';
+          }
+
           return <Icon name={iconName} color={color} size={size} />;
         },
         tabBarActiveTintColor: '#4a90e2',
@@ -34,9 +61,33 @@ function MainTabs() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Dashboard" component={Dashboard} />
-      <Tab.Screen name="Perfil" component={Perfil} />
-      <Tab.Screen name="Cerrar sesión" component={LogoutTab} />
+      {/* Tabs para rol administrador */}
+      {userRole === 1 && (
+        <>
+          <Tab.Screen name="AdminUser" component={AdminUser} />
+          <Tab.Screen name="AgregarUsuario" component={AgregarUsuario} />
+        </>
+      )}
+
+      {/* Tabs para rol nutricionista */}
+      {userRole === 2 && (
+        <Tab.Screen name="NutricionistaUser" component={NutricionistaUser} />
+      )}
+
+      {/* Tabs para rol usuario normal */}
+      {userRole === 3 && (
+        <>
+          <Tab.Screen name="Dashboard" component={Dashboard} />
+
+        </>
+      )}
+      {/* Tabs para todos los usuarios */}
+      {(userRole === 3 || userRole === 2 || userRole === 1) && (
+        <>
+          <Tab.Screen name="Perfil" component={Perfil} />
+          <Tab.Screen name="Cerrar sesión" component={LogoutTab} />
+        </>
+      )}
     </Tab.Navigator>
   );
 }
@@ -46,39 +97,33 @@ export default function Router() {
 
   if (checkingAuth) return null;
 
+  const userRole = userData?.roles_id;
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
         <>
-          {/* Rutas para administrador */}
-          {userData?.roles_id === 1 && (
+          {Platform.OS !== 'web' ? (
+            // En móviles, usar tabs
+            <Stack.Screen
+              name="MainTabs"
+              component={(props) => <MainTabs {...props} userRole={userRole} />}
+            />
+          ) : (
+            // En web, usar vistas directas según el rol
             <>
-              <Stack.Screen name="AdminUser" component={AdminUser} />
-              <Stack.Screen name="AgregarUsuario" component={AgregarUsuario} />
+              {userRole === 1 && (
+                <Stack.Screen name="AdminUser" component={AdminUser} />
+              )}
+              {userRole === 2 && (
+                <Stack.Screen name="NutricionistaUser" component={NutricionistaUser} />
+              )}
+              {userRole === 3 && (
+                <Stack.Screen name="Dashboard" component={Dashboard} />
+              )}
+              {/* Común para todos */}
+              <Stack.Screen name="Perfil" component={Perfil} />
             </>
-          )}
-
-          {/* Rutas para nutricionista */}
-          {userData?.roles_id === 2 && (
-            <Stack.Screen
-              name={Platform.OS === 'web' ? 'NutricionistaUser' : 'MainTabs'}
-              component={Platform.OS === 'web' ? NutricionistaUser : MainTabs}
-              initialParams={{ screen: 'NutricionistaUser' }}
-            />
-          )}
-
-          {/* Rutas para usuario normal */}
-          {userData?.roles_id === 3 && (
-            <Stack.Screen
-              name={Platform.OS === 'web' ? 'Dashboard' : 'MainTabs'}
-              component={Platform.OS === 'web' ? Dashboard : MainTabs}
-              initialParams={{ screen: 'Dashboard' }}
-            />
-          )}
-
-          {/* Rutas comunes para todos los usuarios autenticados */}
-          {Platform.OS === 'web' && (
-            <Stack.Screen name="Perfil" component={Perfil} />
           )}
         </>
       ) : (

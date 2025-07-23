@@ -27,7 +27,7 @@ const AdminUser = () => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [users, setUsers] = useState([]); // 👈 Lista de usuarios
+    const [users, setUsers] = useState([]); // Lista de usuarios
 
     const editarUsuario = (id) => {
         console.log('Editar usuario', id);

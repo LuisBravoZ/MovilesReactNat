@@ -145,7 +145,6 @@ const AgregarUsuario = () => {
                     <Picker
                         selectedValue={form.roles_id}
                         onValueChange={(itemValue) => handleChange('roles_id', itemValue)}
-                       // style={{ marginVertical: 10 }}
                        style={styles.picker}
                     >
                         <Picker.Item label="Administrador" value="1" />
