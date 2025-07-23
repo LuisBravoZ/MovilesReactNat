@@ -14,6 +14,7 @@ import { navigationRef } from '../components/NavigationService';
 import AdminUser from '../views/views_Admin/AdminUser';
 import NutricionistaUser from '../views/views_nutricionista/NutricionistaUser';
 import AgregarUsuario from '../views/views_Admin/AgregarUsuario';
+import ListarUser from '../views/views_Admin/ListarUser';
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -41,6 +42,9 @@ function MainTabs({ userRole }) {
             case 'AdminUser':
               iconName = 'account-cog';
               break;
+            case 'ListarUser':
+              iconName = 'account-multiple';
+              break;
             case 'AgregarUsuario':
               iconName = 'account-plus';
               break;
@@ -66,6 +70,7 @@ function MainTabs({ userRole }) {
         <>
           <Tab.Screen name="AdminUser" component={AdminUser} />
           <Tab.Screen name="AgregarUsuario" component={AgregarUsuario} />
+          <Tab.Screen name="ListarUser" component={ListarUser} />
         </>
       )}
 
@@ -105,24 +110,36 @@ export default function Router() {
         <>
           {Platform.OS !== 'web' ? (
             // En móviles, usar tabs
-            <Stack.Screen
-              name="MainTabs"
-              component={(props) => <MainTabs {...props} userRole={userRole} />}
-            />
+            <Stack.Screen name="MainTabs">
+              {(props) => <MainTabs {...props} userRole={userRole} />}
+            </Stack.Screen>
           ) : (
             // En web, usar vistas directas según el rol
             <>
               {userRole === 1 && (
-                <Stack.Screen name="AdminUser" component={AdminUser} />
+                <>
+                  <Stack.Screen name="AdminUser" component={AdminUser} />
+                  <Stack.Screen name="AgregarUsuario" component={AgregarUsuario} />
+                  <Stack.Screen name="ListarUser" component={ListarUser} />
+                  <Stack.Screen name="Perfil" component={Perfil} />
+
+                </>
               )}
               {userRole === 2 && (
-                <Stack.Screen name="NutricionistaUser" component={NutricionistaUser} />
+                <>
+                  <Stack.Screen name="NutricionistaUser" component={NutricionistaUser} />
+                  <Stack.Screen name="Perfil" component={Perfil} />
+
+                </>
               )}
               {userRole === 3 && (
-                <Stack.Screen name="Dashboard" component={Dashboard} />
+                <>
+                  <Stack.Screen name="Dashboard" component={Dashboard} />
+                  <Stack.Screen name="Perfil" component={Perfil} />
+                </>
               )}
               {/* Común para todos */}
-              <Stack.Screen name="Perfil" component={Perfil} />
+              {/*<Stack.Screen name="Perfil" component={Perfil} />*/}
             </>
           )}
         </>

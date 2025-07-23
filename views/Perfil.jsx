@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, use } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Text, TextInput, IconButton, Button } from 'react-native-paper';
 import styles from '../styles/style_perfil';
@@ -16,7 +16,7 @@ import { ScrollView } from 'react-native';
 const Perfil = () => {
     const navigation = useNavigation();
     const { showAlert } = useAwesomeAlert();
-
+    const { userData } = useContext(AuthContext);
     const { logout } = useContext(AuthContext);
     const handleLogout = () => {
         showAlert({
@@ -28,7 +28,7 @@ const Perfil = () => {
         });
     };
 
-
+    const userRole=userData?.roles_id;
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -86,12 +86,34 @@ const Perfil = () => {
         }
     };
 
-    const sidebarItems = [
-        { icon: 'star', label: 'Dashboard', navigateTo: 'Dashboard' },
-        { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
-        { icon: 'settings', label: 'Configuración' },
-        { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
-    ];
+ let sidebarItems = [];
+
+if (userRole === 1) {
+  // Administrador
+  sidebarItems = [
+    { icon: 'view-dashboard', label: 'AdminUser', navigateTo: 'AdminUser' },
+    { icon: 'account-plus', label: 'Agregar Usuario', navigateTo: 'AgregarUsuario' },
+    { icon: 'account-multiple', label: 'Listar Usuario', navigateTo: 'ListarUser' },
+    { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
+    { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
+  ];
+} else if (userRole === 2) {
+  // Nutricionista
+  sidebarItems = [
+    { icon: 'view-dashboard', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
+    { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
+    { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
+  ];
+} else if (userRole === 3) {
+  // Paciente
+  sidebarItems = [
+    { icon: 'view-dashboard', label: 'Dashboard', navigateTo: 'Dashboard' },
+    { icon: 'calendar', label: 'Agendar Turno', navigateTo: 'AgendarTurno' },
+    { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
+    { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
+  ];
+}
+
 
     useEffect(() => {
         const fetchProfile = async () => {

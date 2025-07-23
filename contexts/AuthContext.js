@@ -26,6 +26,45 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  //funcion para editar un usuario siendo usuario administrador
+const editarUsuarioAdmin = async (id, form) => {
+  try {
+    const token = await getToken();
+
+    // Copiamos el form para no mutarlo directamente
+    const dataToSend = {
+      name: form.name,
+      email: form.email,
+      roles_id: form.roles_id || 3, // Rol por defecto
+    };
+
+    // Solo incluir password si fue ingresado
+    if (form.password && form.password.trim() !== '') {
+      dataToSend.password = form.password;
+      dataToSend.password_confirmation = form.password_confirmation;
+    }
+
+    const response = await api.put(`/user/${id}`, dataToSend, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return {
+      success: true,
+      message: 'Usuario editado exitosamente',
+      data: response.data,
+    };
+
+  } catch (error) {
+    console.error('Error al editar usuario:', error.response?.data || error.message);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Error al editar usuario',
+      errors: error.response?.data?.errors || {},
+    };
+  }
+};
+
+
   //funcion para eliminar un usuario
   const eliminarUsuario = async (id) => {
     try {
@@ -160,7 +199,8 @@ export const AuthProvider = ({ children }) => {
       registerUser, 
       loginWC,
       ListarUsers,
-      eliminarUsuario
+      eliminarUsuario,
+      editarUsuarioAdmin
     }}>
       {children}
     </AuthContext.Provider>

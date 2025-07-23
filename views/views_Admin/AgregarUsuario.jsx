@@ -27,6 +27,7 @@ const AgregarUsuario = () => {
     const sidebarItems = [
         { icon: 'star', label: 'AdminUser', navigateTo: 'AdminUser' },
         { icon: 'account-plus', label: 'Agregar Usuario', navigateTo: 'AgregarUsuario' },
+        { icon: 'account-multiple', label: 'Listar Usuario', navigateTo: 'ListarUser' },
         { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
         { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
     ];
