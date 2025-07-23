@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import style_registro from '../styles/style_registro';
 import axios from 'axios';
+import { useAwesomeAlert } from '../contexts/AwesomeAlert'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../components/api'
+import { AuthContext } from '../contexts/AuthContext';
 
 const Registro = () => {
+  
   const navigation = useNavigation();
+
+  const { registerUser } = useContext(AuthContext);
+
+  const { showAlert } = useAwesomeAlert();
+
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -18,38 +28,46 @@ const Registro = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    // Validación de campos
-    if (!form.name || !form.email || !form.password || !form.password_confirmation) {
-      Alert.alert('Error', 'Por favor, complete todos los campos.');
-      return;
-    }
-    
-    // Validación de contraseñas coincidentes
-    if (form.password !== form.password_confirmation) {
-      Alert.alert('Error', 'Las contraseñas no coinciden.');
-      return;
-    }
+const handleSubmit = async () => {
+  if (!form.name || !form.email || !form.password || !form.password_confirmation) {
+    showAlert({
+      title: 'Error',
+      message: 'Por favor, complete todos los campos.',
+      showCancel: false,
+    });
+    return;
+  }
 
-    setLoading(true);
+  if (form.password !== form.password_confirmation) {
+    showAlert({
+      title: 'Error',
+      message: 'Las contraseñas no coinciden.',
+      showCancel: false,
+    });
+    return;
+  }
 
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register', {
-        name: form.name,
-        email: form.email,
-        password: form.password,
-        password_confirmation: form.password_confirmation,
-      });
+  setLoading(true);
 
-      Alert.alert('Éxito', 'Registro completado correctamente');
-      navigation.navigate('Login');
-    } catch (error) {
-      console.error('Error en el registro:', error.response?.data || error.message);
-      Alert.alert('Error', error.response?.data?.message || 'Error al registrar');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const result = await registerUser(form); 
+
+  if (result.success) {
+    showAlert({
+      title: 'Éxito',
+      message: result.message,
+      showCancel: false,
+      onConfirm: () => navigation.navigate('Login'),
+    });
+  } else {
+    showAlert({
+      title: 'Error',
+      message: result.message,
+      showCancel: false,
+    });
+  }
+
+  setLoading(false);
+};
 
   return (
     <View style={style_registro.container}>
@@ -71,7 +89,7 @@ const Registro = () => {
           keyboardType="email-address"
           value={form.email}
           onChangeText={(text) => handleChange('email', text)}
-        /> 
+        />
 
         <Text style={style_registro.label}>Contraseña:</Text>
         <TextInput
@@ -91,8 +109,8 @@ const Registro = () => {
           onChangeText={(text) => handleChange('password_confirmation', text)}
         />
 
-        <TouchableOpacity 
-          style={style_registro.button} 
+        <TouchableOpacity
+          style={style_registro.button}
           onPress={handleSubmit}
           disabled={loading}
         >

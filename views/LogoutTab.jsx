@@ -1,11 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 const LogoutTab = ({ navigation }) => {
-    useEffect(() => {
-        navigation.replace('Login');
-    }, [navigation]);
+  const { logout } = useContext(AuthContext);
 
-    return null; 
+  useEffect(() => {
+    const doLogout = async () => {
+      await logout(navigation);
+    };
+
+    doLogout();
+  }, [logout, navigation]);
+
+  return null;
 };
 
 export default LogoutTab;

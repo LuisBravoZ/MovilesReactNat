@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
-import styles from '../styles/style_dashboard';
-import Sidebar from '../components/Sidebar';
+import styles from '../../styles/style_dashboard';
+import Sidebar from '../../components/Sidebar';
 import { Platform } from 'react-native';
-import axios from 'axios';
-import { AuthContext } from '../contexts/AuthContext';
-import { useAwesomeAlert } from '../contexts/AwesomeAlert'
+import { AuthContext } from '../../contexts/AuthContext';
+import { useAwesomeAlert } from '../../contexts/AwesomeAlert'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import api from '../components/api'
-import { obtenerPerfil } from '../components/datos_Personales';
+import { obtenerPerfil } from '../../components/datos_Personales';
 
-const Dashboard = () => {
+const NutricionistaUser = () => {
     const navigation = useNavigation();
     const { showAlert } = useAwesomeAlert();
     const { logout } = useContext(AuthContext);
@@ -31,12 +29,10 @@ const Dashboard = () => {
     const [email, setEmail] = useState('');
 
     const sidebarItems = [
-        { icon: 'star', label: 'Dashboard', navigateTo: 'Dashboard' },
+        { icon: 'star', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
         { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
-        { icon: 'settings', label: 'Configuración' },
         { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
     ];
-
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -83,11 +79,7 @@ const Dashboard = () => {
 
             <View style={styles.content}>
                 <View style={styles.dashbox}>
-                    <Text style={styles.h1}>Bienvenido, {name}:</Text>
-                    <View style={styles.infoRow}>
-                        <Text style={styles.label}>Nombre:</Text>
-                        <Text style={styles.value}>{name}</Text>
-                    </View>
+                    <Text style={styles.h1}>Bienvenido Nutricionista, {name}:</Text>
 
                     <View style={styles.infoRow}>
                         <Text style={styles.label}>Correo:</Text>
@@ -100,4 +92,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default NutricionistaUser;
