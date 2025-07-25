@@ -15,6 +15,8 @@ import AdminUser from '../views/views_Admin/AdminUser';
 import NutricionistaUser from '../views/views_nutricionista/NutricionistaUser';
 import AgregarUsuario from '../views/views_Admin/AgregarUsuario';
 import ListarUser from '../views/views_Admin/ListarUser';
+import CrearTurnos from '../views/views_nutricionista/CrearTurnos'
+import ListaTurnos from '../views/views_nutricionista/ListaTurnos'
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -51,6 +53,12 @@ function MainTabs({ userRole }) {
             case 'NutricionistaUser':
               iconName = 'stethoscope';
               break;
+            case 'CrearTurnos':
+              iconName = 'calendar-plus';
+              break;
+            case 'ListaTurnos':
+              iconName = 'calendar-list';
+              break;
             case 'Cerrar sesión':
               iconName = 'logout';
               break;
@@ -76,7 +84,11 @@ function MainTabs({ userRole }) {
 
       {/* Tabs para rol nutricionista */}
       {userRole === 2 && (
+        <>
         <Tab.Screen name="NutricionistaUser" component={NutricionistaUser} />
+        <Tab.Screen name="CrearTurnos" component={CrearTurnos} />
+        <Tab.Screen name="ListaTurnos" component={ListaTurnos} />
+        </>
       )}
 
       {/* Tabs para rol usuario normal */}
@@ -128,6 +140,8 @@ export default function Router() {
               {userRole === 2 && (
                 <>
                   <Stack.Screen name="NutricionistaUser" component={NutricionistaUser} />
+                  <Stack.Screen name="CrearTurnos" component={CrearTurnos} />
+                  <Stack.Screen name="ListaTurnos" component={ListaTurnos} />
                   <Stack.Screen name="Perfil" component={Perfil} />
 
                 </>

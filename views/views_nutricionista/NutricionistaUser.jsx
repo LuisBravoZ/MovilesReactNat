@@ -30,6 +30,9 @@ const NutricionistaUser = () => {
 
     const sidebarItems = [
         { icon: 'star', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
+        { icon: 'calendar-plus', label: 'Crear Turnos', navigateTo: 'CrearTurnos' },
+            { icon: 'account', label: 'Listar Turnos', navigateTo: 'ListaTurnos' },
+
         { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
         { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
     ];

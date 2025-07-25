@@ -128,6 +128,10 @@ const ListarUser = () => {
         />
 
         <View style={styles.content}>
+          <View>
+            <Text style={styles.h1}>Listar Usuarios</Text>
+          </View>
+
           <ScrollView horizontal>
             <View style={{ minWidth: 600, padding: 10 }}>
               <View style={{ flexDirection: 'row', backgroundColor: '#ccc', padding: 10 }}>
@@ -165,7 +169,7 @@ const ListarUser = () => {
             <TextInput label="Rol ID (1=Admin, 2=Nutri, 3=Paciente)" value={form.roles_id} onChangeText={text => setForm({ ...form, roles_id: text })} keyboardType="numeric" />
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 20 }}>
               <Button onPress={cerrarModal} style={{ marginRight: 10 }}>Cancelar</Button>
-              <Button mode="contained" onPress={guardarCambios}>Guardar</Button>
+              <Button style={styles.button} mode="contained" onPress={guardarCambios}>Guardar</Button>
             </View>
           </Modal>
         </Portal>

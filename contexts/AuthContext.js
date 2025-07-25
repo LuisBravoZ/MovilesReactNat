@@ -12,8 +12,109 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
+  //
+  // ==================== TURNOS ====================
+
+  // Crear turnos (por nutricionista)
+  const crearTurnos = async (form) => {
+    try {
+      const token = await getToken();
+      const response = await api.post('/turnos', form, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return {
+        success: true,
+        message: response.data.message,
+        turnos: response.data.turnos,
+      };
+    } catch (error) {
+      console.error('Error al crear turnos:', error.response?.data || error.message);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Error al crear turnos',
+      };
+    }
+  };
+
+  // Reservar turno (por paciente)
+  const reservarTurno = async (turnoId) => {
+    try {
+      const token = await getToken();
+      const response = await api.post(`/turnos/${turnoId}/reservar`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error) {
+      console.error('Error al reservar turno:', error.response?.data || error.message);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Error al reservar turno',
+      };
+    }
+  };
+
+  // Cancelar turno (nutricionista o paciente)
+  const cancelarTurno = async (turnoId) => {
+    try {
+      const token = await getToken();
+      const response = await api.post(`/turnos/${turnoId}/cancelar`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error) {
+      console.error('Error al cancelar turno:', error.response?.data || error.message);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Error al cancelar turno',
+      };
+    }
+  };
+
+  // Asignar turno (nutricionista asigna a paciente)
+  const asignarTurno = async (turnoId, paciente_id) => {
+    try {
+      const token = await getToken();
+      const response = await api.post(`/turnos/${turnoId}/asignar`, {
+        paciente_id,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error) {
+      console.error('Error al asignar turno:', error.response?.data || error.message);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Error al asignar turno',
+      };
+    }
+  };
+
+  //listar turnos (por nutricionista)
+  const listarTurnos = async () => {
+    try {
+      const token = await getToken();
+      const response = await api.get('/nutricionistas/turnos', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error al listar turnos:', error);
+      throw error;
+    }
+  }
+
+
   //funcion para listar todos los usuarios como administrador
-  const ListarUsers = async()=>{
+  const ListarUsers = async () => {
     try {
       const token = await getToken();
       const response = await api.get('/users', {
@@ -27,43 +128,42 @@ export const AuthProvider = ({ children }) => {
   }
 
   //funcion para editar un usuario siendo usuario administrador
-const editarUsuarioAdmin = async (id, form) => {
-  try {
-    const token = await getToken();
+  const editarUsuarioAdmin = async (id, form) => {
+    try {
+      const token = await getToken();
 
-    // Copiamos el form para no mutarlo directamente
-    const dataToSend = {
-      name: form.name,
-      email: form.email,
-      roles_id: form.roles_id || 3, // Rol por defecto
-    };
+      // Copiamos el form para no mutarlo directamente
+      const dataToSend = {
+        name: form.name,
+        email: form.email,
+        roles_id: form.roles_id || 3, // Rol por defecto
+      };
 
-    // Solo incluir password si fue ingresado
-    if (form.password && form.password.trim() !== '') {
-      dataToSend.password = form.password;
-      dataToSend.password_confirmation = form.password_confirmation;
+      // Solo incluir password si fue ingresado
+      if (form.password && form.password.trim() !== '') {
+        dataToSend.password = form.password;
+        dataToSend.password_confirmation = form.password_confirmation;
+      }
+
+      const response = await api.put(`/user/${id}`, dataToSend, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return {
+        success: true,
+        message: 'Usuario editado exitosamente',
+        data: response.data,
+      };
+
+    } catch (error) {
+      console.error('Error al editar usuario:', error.response?.data || error.message);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Error al editar usuario',
+        errors: error.response?.data?.errors || {},
+      };
     }
-
-    const response = await api.put(`/user/${id}`, dataToSend, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    return {
-      success: true,
-      message: 'Usuario editado exitosamente',
-      data: response.data,
-    };
-
-  } catch (error) {
-    console.error('Error al editar usuario:', error.response?.data || error.message);
-    return {
-      success: false,
-      message: error.response?.data?.message || 'Error al editar usuario',
-      errors: error.response?.data?.errors || {},
-    };
-  }
-};
-
+  };
 
   //funcion para eliminar un usuario
   const eliminarUsuario = async (id) => {
@@ -75,7 +175,7 @@ const editarUsuarioAdmin = async (id, form) => {
       return { success: true, message: 'Usuario eliminado exitosamente', data: response.data };
     } catch (error) {
       console.error('Error al eliminar usuario:', error.response?.data || error
-.message);
+        .message);
       return {
         success: false,
         message: error.response?.data?.message || 'Error al eliminar usuario',
@@ -83,7 +183,6 @@ const editarUsuarioAdmin = async (id, form) => {
       };
     }
   };
-  
 
   const registerUser = async (form) => {
     try {
@@ -163,11 +262,11 @@ const editarUsuarioAdmin = async (id, form) => {
 
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const checkAuth = async () => {
       try {
         let token, storedUserData;
-        
+
         if (Platform.OS === 'web') {
           token = localStorage.getItem('token');
           storedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
@@ -191,16 +290,21 @@ const editarUsuarioAdmin = async (id, form) => {
   }, []);
 
   return (
-     <AuthContext.Provider value={{ 
-      isAuthenticated, 
+    <AuthContext.Provider value={{
+      isAuthenticated,
       userData,
-      logout, 
-      checkingAuth, 
-      registerUser, 
+      logout,
+      checkingAuth,
+      registerUser,
       loginWC,
       ListarUsers,
       eliminarUsuario,
-      editarUsuarioAdmin
+      editarUsuarioAdmin,
+      crearTurnos,
+      reservarTurno,
+      cancelarTurno,
+      asignarTurno,
+      listarTurnos,
     }}>
       {children}
     </AuthContext.Provider>

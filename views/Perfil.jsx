@@ -101,6 +101,8 @@ if (userRole === 1) {
   // Nutricionista
   sidebarItems = [
     { icon: 'view-dashboard', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
+    { icon: 'calendar-plus', label: 'Crear Turnos', navigateTo: 'CrearTurnos' },
+    { icon: 'account-multiple', label: 'Listar Turnos', navigateTo: 'ListaTurnos' },
     { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
     { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
   ];
