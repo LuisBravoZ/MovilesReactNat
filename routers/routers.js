@@ -57,7 +57,7 @@ function MainTabs({ userRole }) {
               iconName = 'calendar-plus';
               break;
             case 'ListaTurnos':
-              iconName = 'calendar-list';
+              iconName = 'calendar-plus';
               break;
             case 'Cerrar sesión':
               iconName = 'logout';

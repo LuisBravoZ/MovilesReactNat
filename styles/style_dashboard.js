@@ -50,6 +50,8 @@ export default StyleSheet.create({
     },
     dashbox:
     {
+        margin: 20,
+        padding: 20,
         backgroundColor: '#fff',
         paddingVertical: 40,
         paddingHorizontal: 30,
@@ -119,5 +121,51 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         textAlign: 'center',
+    },
+    turnosTable: {
+        flex: 1,
+        marginTop: 10,
+        minWidth: 350,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+        borderRadius: 8,
+        backgroundColor: '#f9f9f9',
+        overflow: 'hidden',
+    },
+    turnosTableHeader: {
+        flexDirection: 'row',
+        backgroundColor: '#141414ff',
+        paddingVertical: 10,
+    },
+    turnosTableHeaderCell: {
+        flex: 1,
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    turnosTableRow: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    turnosTableCell: {
+        flex: 1,
+        paddingVertical: 10,
+        textAlign: 'center',
+        color: '#333',
+    },
+    atenderButton: {
+        backgroundColor: '#030303ff',
+        borderRadius: 6,
+        paddingVertical: 6,
+        paddingHorizontal: 14,
+        alignSelf: 'center',
+        marginVertical: 4,
+    },
+    atenderButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
     },
 });

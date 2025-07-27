@@ -1,21 +1,25 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, Button, Card, IconButton } from 'react-native-paper';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { View, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { Text, Button, Card, IconButton, Modal, Portal } from 'react-native-paper';
+
+import styles from '../../styles/style_ListaTurnos';
 import { AuthContext } from '../../contexts/AuthContext';
 import Sidebar from '../../components/Sidebar';
-import { useNavigation } from '@react-navigation/native';
 import { useAwesomeAlert } from '../../contexts/AwesomeAlert';
-import { Platform } from 'react-native';
-
-
-
 
 const ListaTurnos = () => {
- const navigation = useNavigation();
-  const { logout, listarTurnos } = useContext(AuthContext);
+  const navigation = useNavigation();
+  const { logout, listarTurnos, cancelarTurno, asignarTurno, listarPacientes } = useContext(AuthContext);
   const { showAlert } = useAwesomeAlert();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pacientesModal, setPacientesModal] = useState([]);
+  const [turnoAsignar, setTurnoAsignar] = useState(null);
+  const [turnos, setTurnos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const sidebarItems = [
     { icon: 'star', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
     { icon: 'calendar-plus', label: 'Crear Turnos', navigateTo: 'CrearTurnos' },
@@ -24,28 +28,22 @@ const ListaTurnos = () => {
     { icon: 'logout', label: 'Cerrar sesión', onPress: () => handleLogout() }
   ];
 
-  function handleLogout() {
+  const handleLogout = () => {
     showAlert({
       title: 'Cerrar sesión',
       message: '¿Está seguro que quiere cerrar sesión?',
       onConfirm: () => logout(navigation),
       showCancel: true,
-      onCancel: () => console.log('Cancelado'),
+      onCancel: () => {},
     });
-  }
-  const [turnos, setTurnos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  };
 
-
-useEffect(() => {
   const cargarTurnos = async () => {
     try {
       setLoading(true);
       const data = await listarTurnos();
-      console.log('Turnos cargados:', data);
       setTurnos(data.turnos);
     } catch (error) {
-      console.error('Error cargando turnos:', error);
       showAlert({
         title: 'Error',
         message: 'No se pudieron cargar los turnos',
@@ -57,146 +55,124 @@ useEffect(() => {
     }
   };
 
-  cargarTurnos();
-}, []);
-
+  useFocusEffect(
+    React.useCallback(() => {
+      cargarTurnos();
+    }, [])
+  );
 
   const renderBoton = (turno) => {
     switch (turno.estado) {
       case 'disponible':
-        return <Button onPress={() => asignarPaciente(turno.id)}>Asignar a paciente</Button>;
+        return <Button style={styles.renderButton}  onPress={() => asignarPaciente(turno.id)}>Asignar a paciente</Button>;
       case 'reservado':
-        return <Button onPress={() => cancelarTurno(turno.id)} color="red">Cancelar</Button>;
+        return <Button style={styles.renderButton} onPress={() => cancelarTurnoHandler(turno.id)} color="red">Cancelar</Button>;
       case 'ocupado':
-        return <Button onPress={() => atenderTurno(turno.id)}>Atender</Button>;
+        return <Button style={styles.renderButton}  onPress={() => atenderTurno(turno.id)}>Atender</Button>;
       default:
         return <Text style={{ color: 'gray' }}>No disponible</Text>;
     }
   };
 
-  const asignarPaciente = (turnoId) => {
-    console.log(`Asignar paciente al turno ${turnoId}`);
-    // aquí pones tu lógica
+  const asignarPaciente = async (turnoId) => {
+    try {
+      const pacientes = await listarPacientes();
+      if (!pacientes.length) {
+        showAlert({ title: 'Sin pacientes', message: 'No hay pacientes disponibles.', showCancel: false });
+        return;
+      }
+      setPacientesModal(pacientes);
+      setTurnoAsignar(turnoId);
+      setModalVisible(true);
+    } catch {
+      showAlert({ title: 'Error', message: 'No se pudo cargar la lista de pacientes', showCancel: false });
+    }
   };
 
-  const cancelarTurno = (turnoId) => {
-    console.log(`Cancelar turno ${turnoId}`);
-    // aquí tu lógica para cancelar
+  const handleAsignarPaciente = async (pacienteId) => {
+    const res = await asignarTurno(turnoAsignar, pacienteId);
+    showAlert({ title: res.success ? 'Éxito' : 'Error', message: res.message, showCancel: false });
+    setModalVisible(false);
+    cargarTurnos();
+  };
+
+  const cancelarTurnoHandler = async (turnoId) => {
+    showAlert({
+      title: 'Cancelar turno',
+      message: '¿Está seguro que desea cancelar este turno?',
+      showCancel: true,
+      onConfirm: async () => {
+        const res = await cancelarTurno(turnoId);
+        showAlert({ title: res.success ? 'Éxito' : 'Error', message: res.message, showCancel: false });
+        cargarTurnos();
+      }
+    });
   };
 
   const atenderTurno = (turnoId) => {
     console.log(`Atender turno ${turnoId}`);
-    // tu lógica para atención
   };
 
   return (
     <View style={styles.container}>
       {Platform.OS === 'web' && (
-        <TouchableOpacity
-          style={styles.menuButton}
-          onPress={() => setDrawerVisible(true)}
-        >
+        <TouchableOpacity style={styles.menuButton} onPress={() => setDrawerVisible(true)}>
           <IconButton icon="menu" size={28} />
         </TouchableOpacity>
       )}
 
-      <Sidebar
-        navigation={navigation}
-        visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
-        items={sidebarItems}
-        style={styles}
-      />
-    
+      <Sidebar navigation={navigation} visible={drawerVisible} onClose={() => setDrawerVisible(false)} items={sidebarItems} style={styles} />
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-  {loading ? (
-    <Text>Cargando turnos...</Text>
-  ) : turnos.length === 0 ? (
-    <Text>No hay turnos disponibles</Text>
-  ) : (
-    turnos.map((turno) => {
-      let cardStyle = [styles.card];
-      if (turno.estado === 'reservado') {
-        cardStyle.push({ backgroundColor: '#ffe0e0' });
-      } else if (turno.estado === 'ocupado') {
-        cardStyle.push({ backgroundColor: '#e0e0ff' });
-      } else if (turno.estado === 'disponible') {
-        cardStyle.push({ backgroundColor: '#e0ffe0' });
-      }
-      return (
-        <Card key={turno.id} style={cardStyle}>
-          <Card.Content>
-            <Text>📅 Fecha: {turno.fecha}</Text>
-            <Text>⏰ Hora: {turno.hora}</Text>
-            <Text>Estado: {turno.estado}</Text>
-            {turno.paciente && <Text>👤 Paciente: {turno.paciente.nombre}</Text>}
-            <View style={{ marginTop: 10 }}>
-              {renderBoton(turno)}
-            </View>
-          </Card.Content>
-        </Card>
-      );
-    })
-  )}
-</ScrollView>
+        {loading ? (
+          <Text>Cargando turnos...</Text>
+        ) : turnos.length === 0 ? (
+          <Text>No hay turnos disponibles</Text>
+        ) : (
+          turnos.map((turno) => {
+            let cardStyle = [styles.card];
+            if (turno.estado === 'reservado') cardStyle.push({ backgroundColor: '#ffe0e0' });
+            else if (turno.estado === 'ocupado') cardStyle.push({ backgroundColor: '#e0e0ff' });
+            else if (turno.estado === 'disponible') cardStyle.push({ backgroundColor: '#e0ffe0' });
+
+            return (
+              <Card key={turno.id} style={cardStyle}>
+                <Card.Content>
+                  <Text style={styles.turnoInfo}>📅 Fecha: {turno.fecha}</Text>
+                  <Text style={styles.turnoInfo}>⏰ Hora: {turno.hora}</Text>
+                  <Text style={styles.turnoInfo}>📝Estado: {turno.estado}</Text>
+                  <Text style={styles.turnoPaciente}>
+                    👤 Paciente: {turno.paciente?.name || turno.paciente?.nombre || 'Sin nombre'}
+                  </Text>
+                  <View style={{ marginTop: 10 }}>
+                    {renderBoton(turno)}
+                  </View>
+                </Card.Content>
+              </Card>
+            );
+          })
+        )}
+      </ScrollView>
+
+      <Portal>
+        <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.modal}>
+          <Text style={styles.modalTitle}>Selecciona un paciente</Text>
+          <ScrollView style={styles.modalList}>
+            {pacientesModal.map(p => (
+              <View key={p.id} style={styles.modalItem}>
+                <View>
+                  <Text style={styles.modalPatientName}>{p.name}</Text>
+                  <Text style={styles.modalPatientEmail}>{p.email}</Text>
+                </View>
+                <Button style={styles.modalButton} mode="contained" onPress={() => handleAsignarPaciente(p.id)}>Asignar</Button>
+              </View>
+            ))}
+          </ScrollView>
+          <Button onPress={() => setModalVisible(false)} style={{ marginTop: 10 }}>Cerrar</Button>
+        </Modal>
+      </Portal>
     </View>
   );
 };
-
-const shadowStyle = Platform.OS === 'web'
-    ? { boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }
-    : {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 10,
-    };
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  card: {
-    marginBottom: 10,
-    backgroundColor: '#f5f5f5',
-  },
-
-  dashbox:
-  {
-    backgroundColor: '#fff',
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-    width: 350,
-    borderRadius: 12,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    alignItems: 'center',
-    ...shadowStyle
-  },
-   drawerContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    width: 250,
-    alignSelf: 'flex-start',
-    borderRadius: 10,
-    minHeight: 300,
-  },
-   scrollContainer: {
-    padding: 20,
-    paddingBottom: 40,
-    flexGrow: 1,
-    ...(Platform.OS === 'web' && {
-      maxHeight: '90vh',
-      overflowY: 'auto',
-    }),
-  },
-  card: {
-    marginBottom: 10,
-    backgroundColor: '#f5f5f5',
-  }
-});
 
 export default ListaTurnos;

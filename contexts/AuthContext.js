@@ -15,6 +15,20 @@ export const AuthProvider = ({ children }) => {
   //
   // ==================== TURNOS ====================
 
+  // Obtener turnos reservados de un nutricionista específico
+  const listarTurnosReservadosNutricionista = async (nutricionistaId) => {
+    try {
+      const token = await getToken();
+      const response = await api.get(`/nutricionistas/turnos/${nutricionistaId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error al listar turnos reservados:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   // Crear turnos (por nutricionista)
   const crearTurnos = async (form) => {
     try {
@@ -37,9 +51,25 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Reservar turno (por paciente)
-  const reservarTurno = async (turnoId) => {
+  const reservarTurno = async (turnoId, fecha) => {
     try {
       const token = await getToken();
+
+      // 1. Verificar si el usuario ya tiene un turno reservado ese día
+      const responseTurnos = await api.get('/turnos/mis-turnos', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const yaReservado = responseTurnos.data.turnos?.some(
+        t => t.fecha === fecha
+      );
+      if (yaReservado) {
+        return {
+          success: false,
+          message: 'Solo puedes reservar un turno por día.',
+        };
+      }
+
+      // 2. Intentar reservar el turno
       const response = await api.post(`/turnos/${turnoId}/reservar`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -68,15 +98,35 @@ export const AuthProvider = ({ children }) => {
         message: response.data.message,
       };
     } catch (error) {
+      // El backend debe validar si el usuario tiene permiso para cancelar
       console.error('Error al cancelar turno:', error.response?.data || error.message);
       return {
         success: false,
-        message: error.response?.data?.message || 'Error al cancelar turno',
+        message: error.response?.data?.message || 'No tienes permiso para cancelar este turno',
       };
     }
   };
 
+  // listarpacientes para poder asignar turnos
+ const listarPacientes = async () => {
+  try {
+    const token = await getToken();
+    const response = await api.get('/users', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log('Respuesta completa:', response.data);
+
+    // Ajusta aquí según la estructura real:
+    const lista = Array.isArray(response.data) ? response.data : response.data.users || response.data.usuarios || [];
+    const pacientes = lista.filter(u => u.roles_id === 3);
+    return pacientes;
+  } catch (error) {
+    console.error('Error al listar pacientes:', error.response?.data || error.message);
+    return [];
+  }
+};
   // Asignar turno (nutricionista asigna a paciente)
+
   const asignarTurno = async (turnoId, paciente_id) => {
     try {
       const token = await getToken();
@@ -97,6 +147,8 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
+
+
 
   //listar turnos (por nutricionista)
   const listarTurnos = async () => {
@@ -305,6 +357,8 @@ export const AuthProvider = ({ children }) => {
       cancelarTurno,
       asignarTurno,
       listarTurnos,
+      listarTurnosReservadosNutricionista,
+      listarPacientes
     }}>
       {children}
     </AuthContext.Provider>
