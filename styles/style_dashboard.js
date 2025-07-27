@@ -168,4 +168,9 @@ export default StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
+    h2: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 12,
+}
 });

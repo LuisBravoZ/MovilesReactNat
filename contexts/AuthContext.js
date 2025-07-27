@@ -15,6 +15,48 @@ export const AuthProvider = ({ children }) => {
   //
   // ==================== TURNOS ====================
 
+//listar turno reservados po el paciente autenticado
+const listarMisTurnosReservadosPaciente = async () => {
+  try {
+    const token = await getToken();
+    const response = await api.get('/paciente/turnos', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al listar mis turnos reservados:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+// Listar solo los turnos reservados del nutricionista autenticado
+const listarMisTurnosReservados = async () => {
+  try {
+    const token = await getToken();
+    const response = await api.get('/nutricionistas/turnos/reservados', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al listar mis turnos reservados:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+  //listar turnos de un nutricionista específico
+const listarTurnosPorNutricionista = async (nutricionistaId) => {
+  try {
+    const token = await getToken();
+    const response = await api.get(`/nutricionistas/turnos/${nutricionistaId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al listar turnos por nutricionista:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
   // Obtener turnos reservados de un nutricionista específico
   const listarTurnosReservadosNutricionista = async (nutricionistaId) => {
     try {
@@ -55,7 +97,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = await getToken();
 
-      // 1. Verificar si el usuario ya tiene un turno reservado ese día
+      // Verificar si el usuario ya tiene un turno reservado ese día
       const responseTurnos = await api.get('/turnos/mis-turnos', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -175,6 +217,19 @@ export const AuthProvider = ({ children }) => {
       return response.data;
     } catch (error) {
       console.error('Error al listar usuarios:', error);
+      throw error;
+    }
+  }
+  //funcion de listar nutricionistas
+  const listarNutricionistas = async () => {
+    try {
+      const token = await getToken();
+      const response = await api.get('/nutricionistas/listar', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error al listar nutricionistas:', error);
       throw error;
     }
   }
@@ -358,7 +413,11 @@ export const AuthProvider = ({ children }) => {
       asignarTurno,
       listarTurnos,
       listarTurnosReservadosNutricionista,
-      listarPacientes
+      listarPacientes,
+      listarNutricionistas,
+      listarTurnosPorNutricionista,
+      listarMisTurnosReservados,
+      listarMisTurnosReservadosPaciente
     }}>
       {children}
     </AuthContext.Provider>

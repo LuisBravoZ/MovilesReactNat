@@ -110,7 +110,7 @@ if (userRole === 1) {
   // Paciente
   sidebarItems = [
     { icon: 'view-dashboard', label: 'Dashboard', navigateTo: 'Dashboard' },
-    { icon: 'calendar', label: 'Agendar Turno', navigateTo: 'AgendarTurno' },
+    { icon: 'calendar-check', label: 'Reservar Turno', navigateTo: 'ReservarTurno' },
     { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
     { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
   ];

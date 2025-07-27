@@ -9,11 +9,13 @@ import { useAwesomeAlert } from '../../contexts/AwesomeAlert'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { obtenerPerfil } from '../../components/datos_Personales';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const NutricionistaUser = () => {
     const navigation = useNavigation();
     const { showAlert } = useAwesomeAlert();
-    const { logout, userData, listarTurnosReservadosNutricionista } = useContext(AuthContext);
+    const { logout, userData, listarMisTurnosReservados } = useContext(AuthContext);
     const handleLogout = () => {
         showAlert({
             title: 'Cerrar sesión',
@@ -25,6 +27,7 @@ const NutricionistaUser = () => {
     };
     const [turnosReservados, setTurnosReservados] = useState([]);
     const [loadingTurnos, setLoadingTurnos] = useState(true);
+    const [mostrarDatePicker, setMostrarDatePicker] = useState(false);
 
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [name, setName] = useState('');
@@ -66,10 +69,8 @@ const NutricionistaUser = () => {
         const cargarTurnos = async () => {
             try {
                 setLoadingTurnos(true);
-                if (userData?.id) {
-                    const data = await listarTurnosReservadosNutricionista(userData.id);
-                    setTurnosReservados(data.turnos || []);
-                }
+                const data = await listarMisTurnosReservados();
+                setTurnosReservados(data.turnos || []);
             } catch (error) {
                 setTurnosReservados([]);
             } finally {
@@ -114,34 +115,49 @@ const NutricionistaUser = () => {
                         <Text style={styles.value}>{email}</Text>
                     </View>
 
-<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-                    <Text style={{ marginRight: 8 }}>Buscar por fecha:</Text>
-                    {Platform.OS === 'web' ? (
-                        <input
-                            type="date"
-                            value={fechaSeleccionada}
-                            onChange={e => setFechaSeleccionada(e.target.value)}
-                            style={{ padding: 4, borderRadius: 4, borderWidth: 1, borderColor: '#ccc' }}
-                        />
-                    ) : (
-                        <TouchableOpacity
-                            onPress={async () => {
-                                // Puedes usar un DateTimePicker aquí si lo tienes instalado
-                                // Por simplicidad, aquí solo mostramos un ejemplo
-                                // setFechaSeleccionada(nuevaFechaSeleccionada)
-                            }}
-                            style={{
-                                borderWidth: 1,
-                                borderColor: '#ccc',
-                                borderRadius: 4,
-                                padding: 8,
-                                backgroundColor: '#f9f9f9'
-                            }}
-                        >
-                            <Text>{fechaSeleccionada}</Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                        <Text style={{ marginRight: 8 }}>Buscar por fecha:</Text>
+
+                        {Platform.OS === 'web' ? (
+                            <input
+                                type="date"
+                                value={fechaSeleccionada}
+                                onChange={e => setFechaSeleccionada(e.target.value)}
+                                style={{ padding: 4, borderRadius: 4, borderWidth: 1, borderColor: '#ccc' }}
+                            />
+                        ) : (
+                            <>
+                                <TouchableOpacity
+                                    onPress={() => setMostrarDatePicker(true)}
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: '#ccc',
+                                        borderRadius: 4,
+                                        padding: 8,
+                                        backgroundColor: '#f9f9f9'
+                                    }}
+                                >
+                                    <Text>{fechaSeleccionada}</Text>
+                                </TouchableOpacity>
+
+                                {mostrarDatePicker && (
+                                    <DateTimePicker
+                                        value={new Date(fechaSeleccionada)}
+                                        mode="date"
+                                        display="default"
+                                        onChange={(event, selectedDate) => {
+                                            setMostrarDatePicker(false);
+                                            if (event.type === 'set' && selectedDate) {
+                                                const isoDate = selectedDate.toISOString().split('T')[0];
+                                                setFechaSeleccionada(isoDate);
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </View>
+
 
                 </View>
                 <View style={styles.dashbox}>
@@ -153,7 +169,7 @@ const NutricionistaUser = () => {
                     ) : (
                         <ScrollView horizontal style={{ marginTop: 10 }}>
                             <View style={styles.turnosTable}>
-                               
+
                                 {/* Filas */}
                                 {turnosFiltrados.length === 0 ? (
                                     <Text>No hay turnos reservados para esta fecha</Text>
@@ -164,6 +180,8 @@ const NutricionistaUser = () => {
                                             <View style={styles.turnosTableHeader}>
                                                 <Text style={styles.turnosTableHeaderCell}>Fecha</Text>
                                                 <Text style={styles.turnosTableHeaderCell}>Hora</Text>
+                                                <Text style={styles.turnosTableHeaderCell}>Paciente</Text>
+
                                                 <Text style={styles.turnosTableHeaderCell}>Acción</Text>
                                             </View>
                                             {/* Filas */}
@@ -171,6 +189,9 @@ const NutricionistaUser = () => {
                                                 <View key={turno.id} style={styles.turnosTableRow}>
                                                     <Text style={styles.turnosTableCell}>{turno.fecha}</Text>
                                                     <Text style={styles.turnosTableCell}>{turno.hora}</Text>
+                                                    <Text style={styles.turnosTableCell}>
+                                                        {turno.paciente ? `${turno.paciente.name}` : 'Sin datos'}
+                                                    </Text>
                                                     <TouchableOpacity
                                                         style={styles.atenderButton}
                                                         onPress={() => console.log('Atender turno', turno.id)}
@@ -179,6 +200,7 @@ const NutricionistaUser = () => {
                                                     </TouchableOpacity>
                                                 </View>
                                             ))}
+
                                         </View>
                                     </ScrollView>
                                 )}
@@ -186,7 +208,7 @@ const NutricionistaUser = () => {
                         </ScrollView>
                     )}
                 </View>
-                
+
             </View>
         </View>
     );

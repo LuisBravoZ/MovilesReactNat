@@ -17,6 +17,7 @@ import AgregarUsuario from '../views/views_Admin/AgregarUsuario';
 import ListarUser from '../views/views_Admin/ListarUser';
 import CrearTurnos from '../views/views_nutricionista/CrearTurnos'
 import ListaTurnos from '../views/views_nutricionista/ListaTurnos'
+import ReservarTurno from '../views/views_paciente/ReservarTurno';
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -59,6 +60,9 @@ function MainTabs({ userRole }) {
             case 'ListaTurnos':
               iconName = 'calendar-plus';
               break;
+            case 'ReservarTurno':
+              iconName = 'calendar-check';
+              break;
             case 'Cerrar sesión':
               iconName = 'logout';
               break;
@@ -95,6 +99,7 @@ function MainTabs({ userRole }) {
       {userRole === 3 && (
         <>
           <Tab.Screen name="Dashboard" component={Dashboard} />
+          <Tab.Screen name="ReservarTurno" component={ReservarTurno} />
 
         </>
       )}
@@ -150,6 +155,7 @@ export default function Router() {
                 <>
                   <Stack.Screen name="Dashboard" component={Dashboard} />
                   <Stack.Screen name="Perfil" component={Perfil} />
+                  <Stack.Screen name="ReservarTurno" component={ReservarTurno} />
                 </>
               )}
               {/* Común para todos */}
