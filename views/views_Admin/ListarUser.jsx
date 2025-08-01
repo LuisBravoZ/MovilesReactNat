@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { Text, IconButton, Button, Modal, Portal, Provider, TextInput } from 'react-native-paper';
+import { Picker } from '@react-native-picker/picker';
 import styles from '../../styles/style_dashboard';
 import Sidebar from '../../components/Sidebar';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useAwesomeAlert } from '../../contexts/AwesomeAlert';
+import { useNavigation } from '@react-navigation/native';
+
 
 const ListarUser = () => {
+  const navigation = useNavigation();
   const { logout, ListarUsers, eliminarUsuario, editarUsuarioAdmin } = useContext(AuthContext);
   const { showAlert } = useAwesomeAlert();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
 
   const [visible, setVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -110,6 +116,14 @@ const ListarUser = () => {
     });
   };
 
+  const usersFiltrados = users.filter(user => {
+    const coincideBusqueda =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase());
+    const coincideRol = roleFilter ? String(user.roles_id) === roleFilter : true;
+    return coincideBusqueda && coincideRol;
+  });
+
   return (
     <Provider>
       <View style={styles.container}>
@@ -120,7 +134,7 @@ const ListarUser = () => {
         )}
 
         <Sidebar
-          navigation={null}
+          navigation={navigation}
           visible={drawerVisible}
           onClose={() => setDrawerVisible(false)}
           items={sidebarItems}
@@ -130,6 +144,30 @@ const ListarUser = () => {
         <View style={styles.content}>
           <View>
             <Text style={styles.h1}>Listar Usuarios</Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 16 }}>
+            <TextInput
+              label="Buscar usuario"
+              value={search}
+              onChangeText={setSearch}
+              style={{ flex: 1, maxWidth: 220, marginRight: 10 }}
+              mode="outlined"
+              left={<TextInput.Icon icon="magnify" />}
+            />
+            <Text style={{ marginRight: 8 }}>Rol:</Text>
+            <View style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 6, overflow: 'hidden', backgroundColor: '#fff' }}>
+              <Picker
+                selectedValue={roleFilter}
+                style={{ width: 140, height: 40 }}
+                onValueChange={setRoleFilter}
+              >
+                <Picker.Item label="Todos" value="" />
+                <Picker.Item label="Admin" value="1" />
+                <Picker.Item label="Nutricionista" value="2" />
+                <Picker.Item label="Paciente" value="3" />
+              </Picker>
+            </View>
           </View>
 
           <ScrollView horizontal>
@@ -142,7 +180,7 @@ const ListarUser = () => {
                 <Text style={{ width: 120, fontWeight: 'bold' }}>Acciones</Text>
               </View>
 
-              {users.map(user => (
+              {usersFiltrados.map(user => (
                 <View key={user.id} style={{ flexDirection: 'row', padding: 10, borderBottomWidth: 1, borderColor: '#ddd' }}>
                   <Text style={{ width: 50 }}>{user.id}</Text>
                   <Text style={{ width: 150 }}>{user.name}</Text>

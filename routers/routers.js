@@ -18,6 +18,8 @@ import ListarUser from '../views/views_Admin/ListarUser';
 import CrearTurnos from '../views/views_nutricionista/CrearTurnos'
 import ListaTurnos from '../views/views_nutricionista/ListaTurnos'
 import ReservarTurno from '../views/views_paciente/ReservarTurno';
+import HistorialTurnosCompletados from '../views/views_nutricionista/HistorialTurnosCompletados';
+import HistorialPaciente from '../views/views_paciente/HistorialPaciente'
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -60,6 +62,12 @@ function MainTabs({ userRole }) {
             case 'ListaTurnos':
               iconName = 'calendar-plus';
               break;
+            case 'HistorialTurnosCompletados':
+              iconName = 'calendar-check';
+            break;
+            case 'HistorialPaciente':
+              iconName = 'history';
+              break;
             case 'ReservarTurno':
               iconName = 'calendar-check';
               break;
@@ -72,7 +80,7 @@ function MainTabs({ userRole }) {
 
           return <Icon name={iconName} color={color} size={size} />;
         },
-        tabBarActiveTintColor: '#4a90e2',
+        tabBarActiveTintColor: '#272727ff',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}
@@ -92,6 +100,7 @@ function MainTabs({ userRole }) {
         <Tab.Screen name="NutricionistaUser" component={NutricionistaUser} />
         <Tab.Screen name="CrearTurnos" component={CrearTurnos} />
         <Tab.Screen name="ListaTurnos" component={ListaTurnos} />
+        <Tab.Screen name="HistorialTurnosCompletados" component={HistorialTurnosCompletados} />
         </>
       )}
 
@@ -100,6 +109,7 @@ function MainTabs({ userRole }) {
         <>
           <Tab.Screen name="Dashboard" component={Dashboard} />
           <Tab.Screen name="ReservarTurno" component={ReservarTurno} />
+          <Tab.Screen name="HistorialPaciente" component={HistorialPaciente} />
 
         </>
       )}
@@ -147,6 +157,7 @@ export default function Router() {
                   <Stack.Screen name="NutricionistaUser" component={NutricionistaUser} />
                   <Stack.Screen name="CrearTurnos" component={CrearTurnos} />
                   <Stack.Screen name="ListaTurnos" component={ListaTurnos} />
+                  <Stack.Screen name="HistorialTurnosCompletados" component={HistorialTurnosCompletados} />
                   <Stack.Screen name="Perfil" component={Perfil} />
 
                 </>
@@ -156,6 +167,8 @@ export default function Router() {
                   <Stack.Screen name="Dashboard" component={Dashboard} />
                   <Stack.Screen name="Perfil" component={Perfil} />
                   <Stack.Screen name="ReservarTurno" component={ReservarTurno} />
+                  <Stack.Screen name="HistorialPaciente" component={HistorialPaciente} />
+
                 </>
               )}
               {/* Común para todos */}

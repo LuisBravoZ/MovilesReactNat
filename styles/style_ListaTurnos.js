@@ -3,17 +3,17 @@ import { StyleSheet, Platform } from "react-native";
 const shadowStyle = Platform.OS === 'web'
   ? { boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }
   : {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
-      elevation: 10,
-    };
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 10,
+  };
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     padding: 16,
   },
   menuButton: {
@@ -103,5 +103,69 @@ export default StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+  },
+  eliminarButton: {
+    backgroundColor: '#ffb4b4', // rojo suave
+    borderRadius: 8,
+    minWidth: 0,                // Quita el ancho mínimo
+    paddingVertical: 5,
+    paddingHorizontal: 14,      // Igual que el de asignar paciente
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
+    elevation: 0,
+  },
+  eliminarButtonLote: {
+    backgroundColor: '#000000ff',
+    marginVertical: 12,
+  },
+  turnoIcon: {
+    fontSize: 32,
+    marginRight: 12,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  turnoEstado: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  eliminarButtonLabel: {
+    color: '#ac3a3aff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+  },
+  dashboxC:
+  {
+    margin: 20,
+    padding: 20,
+    backgroundColor: '#fff',
+    paddingVertical: 40,
+    paddingHorizontal: 30,
+    width: 400,
+    borderRadius: 12,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    alignItems: 'center',     
+    justifyContent: 'center', 
+    flexDirection: 'row',     
+    gap: 10,                  
+    alignSelf: 'center',       
+    ...shadowStyle
+  },
+  turnoCardButtons: {
+    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+    width: '100%',
   },
 });

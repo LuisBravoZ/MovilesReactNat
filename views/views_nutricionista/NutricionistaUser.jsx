@@ -15,7 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const NutricionistaUser = () => {
     const navigation = useNavigation();
     const { showAlert } = useAwesomeAlert();
-    const { logout, userData, listarMisTurnosReservados } = useContext(AuthContext);
+    const { logout, userData, listarMisTurnosReservados, atenderTurno } = useContext(AuthContext);
     const handleLogout = () => {
         showAlert({
             title: 'Cerrar sesión',
@@ -42,7 +42,7 @@ const NutricionistaUser = () => {
         { icon: 'star', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
         { icon: 'calendar-plus', label: 'Crear Turnos', navigateTo: 'CrearTurnos' },
         { icon: 'account', label: 'Listar Turnos', navigateTo: 'ListaTurnos' },
-
+        { icon: 'calendar-check', label: 'Historial Turnos', navigateTo: 'HistorialTurnosCompletados' },
         { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
         { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
     ];
@@ -194,10 +194,25 @@ const NutricionistaUser = () => {
                                                     </Text>
                                                     <TouchableOpacity
                                                         style={styles.atenderButton}
-                                                        onPress={() => console.log('Atender turno', turno.id)}
+                                                        onPress={async () => {
+                                                            const resultado = await atenderTurno(turno.id);
+                                                            showAlert({
+                                                                title: resultado.success ? 'Éxito' : 'Error',
+                                                                message: resultado.message,
+                                                                onConfirm: () => {
+                                                                    if (resultado.success) {
+                                                                        // recargar turnos luego de atender
+                                                                        listarMisTurnosReservados().then(data => {
+                                                                            setTurnosReservados(data.turnos || []);
+                                                                        });
+                                                                    }
+                                                                }
+                                                            });
+                                                        }}
                                                     >
                                                         <Text style={styles.atenderButtonText}>Atender</Text>
                                                     </TouchableOpacity>
+
                                                 </View>
                                             ))}
 

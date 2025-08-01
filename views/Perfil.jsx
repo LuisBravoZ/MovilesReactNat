@@ -4,12 +4,10 @@ import { Text, TextInput, IconButton, Button } from 'react-native-paper';
 import styles from '../styles/style_perfil';
 import Sidebar from '../components/Sidebar';
 import { Platform } from 'react-native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../contexts/AuthContext';
 import { useAwesomeAlert } from '../contexts/AwesomeAlert'
 import { useNavigation } from '@react-navigation/native';
-import api from '../components/api'
 import { obtenerDatosPersonales, crearDatosPersonales, actualizarDatosPersonales, obtenerPerfil, actualizarPerfil } from '../components/datos_Personales';
 import { ScrollView } from 'react-native';
 
@@ -103,6 +101,7 @@ if (userRole === 1) {
     { icon: 'view-dashboard', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
     { icon: 'calendar-plus', label: 'Crear Turnos', navigateTo: 'CrearTurnos' },
     { icon: 'account-multiple', label: 'Listar Turnos', navigateTo: 'ListaTurnos' },
+    { icon: 'calendar-check', label: 'Historial Turnos', navigateTo: 'HistorialTurnosCompletados' },
     { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
     { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
   ];
@@ -111,6 +110,7 @@ if (userRole === 1) {
   sidebarItems = [
     { icon: 'view-dashboard', label: 'Dashboard', navigateTo: 'Dashboard' },
     { icon: 'calendar-check', label: 'Reservar Turno', navigateTo: 'ReservarTurno' },
+    { icon: 'history', label: 'Historial Paciente', navigateTo: 'HistorialPaciente' },
     { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
     { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout }
   ];

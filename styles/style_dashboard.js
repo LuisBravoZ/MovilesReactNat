@@ -65,6 +65,23 @@ export default StyleSheet.create({
         alignItems: 'center',
         ...shadowStyle
     },
+    dashboxC:
+    {
+        margin: 20,
+        padding: 20,
+        backgroundColor: '#fff',
+        paddingVertical: 40,
+        paddingHorizontal: 30,
+        width:400,
+        borderRadius: 12,
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        alignItems: 'center',
+        ...shadowStyle
+    },
     drawerContainer: {
         backgroundColor: '#fff',
         padding: 20,
@@ -169,8 +186,51 @@ export default StyleSheet.create({
         fontWeight: 'bold',
     },
     h2: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 12,
-}
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 12,
+    },
+    turnoCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f5f8ff',
+        borderRadius: 14,
+        padding: 18,
+        marginBottom: 14,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+    },
+    turnoIcon: {
+        fontSize: 32,
+        marginRight: 16,
+    },
+    turnoInfoBox: {
+        flex: 1,
+    },
+    turnoLabel: {
+        fontSize: 15,
+        color: '#333',
+        marginBottom: 2,
+    },
+    turnoNutricionista: {
+        fontSize: 15,
+        color: '#0c0c0cff',
+        fontWeight: 'bold',
+        marginTop: 2,
+    },
+    turnoButton: {
+        backgroundColor: '#000000ff',
+        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 18,
+        marginLeft: 12,
+    },
+    turnoButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 15,
+    },
 });

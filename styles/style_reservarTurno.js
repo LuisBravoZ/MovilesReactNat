@@ -17,7 +17,7 @@ export default StyleSheet.create({
         padding: 20,
     },
     formContainer: {
-        flex: 1, // 👈 Asegura esto
+        flex: 1, 
         padding: 16,
     },
     title: {
@@ -94,11 +94,56 @@ export default StyleSheet.create({
         textAlign: 'center',
     },
     botonReservar: {
-  backgroundColor: '#4CAF50',
+  backgroundColor: '#141414ff',
   padding: 10,
   borderRadius: 8,
   alignItems: 'center',
   marginVertical: 5
+},
+turnoCardElegante: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#e8f5e9',
+  borderRadius: 14,
+  padding: 16,
+  marginBottom: 14,
+  borderWidth: 1.5,
+  borderColor: '#43a047',
+  ...shadowStyle,
+},
+turnoIconBox: {
+  width: 48,
+  height: 48,
+  borderRadius: 24,
+  backgroundColor: '#43a04722',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: 16,
+},
+turnoIcon: {
+  fontSize: 28,
+  color: '#43a047',
+},
+turnoFecha: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#222',
+  marginBottom: 2,
+},
+turnoHora: {
+  fontSize: 15,
+  color: '#1976d2',
+  marginBottom: 2,
+},
+turnoEstado: {
+  fontSize: 15,
+  color: '#43a047',
+  fontWeight: 'bold',
+  marginBottom: 2,
+},
+turnoLabelIcon: {
+  fontSize: 16,
+  marginRight: 4,
 },
 
 });

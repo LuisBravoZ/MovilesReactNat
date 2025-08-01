@@ -44,6 +44,7 @@ const CrearTurnos = () => {
     { icon: 'star', label: 'NutricionistaUser', navigateTo: 'NutricionistaUser' },
     { icon: 'calendar-plus', label: 'Crear Turnos', navigateTo: 'CrearTurnos' },
     { icon: 'calendar-plus', label: 'Listar Turnos', navigateTo: 'ListaTurnos' },
+    { icon: 'calendar-check', label: 'Historial Turnos', navigateTo: 'HistorialTurnosCompletados' },
     { icon: 'account', label: 'Perfil', navigateTo: 'Perfil' },
     { icon: 'logout', label: 'Cerrar sesión', onPress: handleLogout },
   ];
